@@ -17,20 +17,19 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Pipenv and Dependencies
         working-directory: ./starter/backend
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install flake8 pytest
+          pip install pipenv
+          pipenv install --dev
 
-      - name: Run lint
+      - name: Run Lint
         working-directory: ./starter/backend
-        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        run: pipenv run lint
 
-      - name: Run tests
+      - name: Run Tests
         working-directory: ./starter/backend
-        run: pytest
+        run: pipenv run test
 
   deploy:
     needs: [lint-and-test]
@@ -51,22 +50,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image
+      - name: Build, tag, and push Docker image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: backend
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: ./starter/backend
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update kubeconfig and deploy with Kustomize
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./starter/backend
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-
-      - name: Update kubeconfig
-        run: |
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-
-      - name: Deploy Backend to EKS
-        run: |
-          kubectl apply -f setup/k8s/ || kubectl apply -f starter/backend/k8s/ || true
-          kubectl set image deployment/backend backend=${{ steps.login-ecr.outputs.registry }}/backend:${{ github.sha }} || true
-          kubectl rollout status deployment/backend --timeout=180s || true
+          cd starter/backend/k8s
+          kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          kustomize build | kubectl apply -f -
