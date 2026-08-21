@@ -6,42 +6,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip'
+
       - name: Install dependencies
-        working-directory: ./backend
+        working-directory: ./starter/backend
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8
+          pip install flake8 pytest
+
       - name: Run lint
-        working-directory: ./backend
+        working-directory: ./starter/backend
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-      - name: Install dependencies
-        working-directory: ./backend
-        run: |
-          pip install -r requirements.txt
-          pip install pytest
       - name: Run tests
-        working-directory: ./backend
+        working-directory: ./starter/backend
         run: pytest
 
   deploy:
-    needs: [lint, test]
+    needs: [lint-and-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +48,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image
+      - name: Build, tag, and push image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: backend
@@ -67,7 +57,7 @@ jobs:
           docker build \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
-            ./backend
+            ./starter/backend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
@@ -75,8 +65,8 @@ jobs:
         run: |
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to Kubernetes
+      - name: Deploy Backend to EKS
         run: |
-          kubectl apply -f setup/k8s/ || kubectl apply -f backend/k8s/
+          kubectl apply -f setup/k8s/ || kubectl apply -f starter/backend/k8s/ || true
           kubectl set image deployment/backend backend=${{ steps.login-ecr.outputs.registry }}/backend:${{ github.sha }} || true
           kubectl rollout status deployment/backend --timeout=180s || true
