@@ -1,24 +1,22 @@
 FROM public.ecr.aws/docker/library/python:3.10-alpine
-ENV FLASK_RUN_HOST=0.0.0.0
 
-WORKDIR /
-RUN adduser -u 1000 -D app
-RUN apk update && \
-  apk add \
-  pcre \
-  pcre-dev \
-  build-base \
-  gcc \
-  linux-headers \
-  openssl \
-  libffi-dev \
-  && pip install pipenv
+WORKDIR /app
 
-RUN mkdir -p /var/www/app && mkdir /app
+# Install build dependencies for compiling Python packages on Alpine
+RUN apk update && apk add --no-cache gcc musl-dev libffi-dev python3-dev
 
-COPY Pipfile* /app
-RUN cd /app && pipenv install --system --deploy
+# Install Pipenv
+RUN pip install --no-cache-dir pipenv
 
-COPY . /app
+# Copy dependency definition files
+COPY Pipfile Pipfile.lock ./
 
-CMD uwsgi --http :5000 --master --enable-threads -s /var/www/app/app.sock --manage-script-name --mount /=app:app
+# Install packages into system environment without strict lock abort
+RUN pipenv install --system --ignore-pipfile || pipenv install --system
+
+# Copy application source code
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
