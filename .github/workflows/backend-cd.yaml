@@ -3,6 +3,9 @@ name: Backend Continuous Deployment
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'starter/backend/**'
+      - '.github/workflows/backend-cd.yaml'
   workflow_dispatch:
 
 jobs:
