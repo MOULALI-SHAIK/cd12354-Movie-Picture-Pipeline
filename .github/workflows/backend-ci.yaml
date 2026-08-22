@@ -5,6 +5,8 @@ on:
     branches: [ main ]
     paths:
       - 'starter/backend/**'
+      - 'Pipfile'
+      - 'Pipfile.lock'
   workflow_dispatch:
 
 jobs:
@@ -12,42 +14,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 
       - name: Install Pipenv and Dependencies
-        working-directory: ./starter/backend
         run: |
           pip install pipenv
           pipenv install --dev
 
       - name: Run Lint
-        working-directory: ./starter/backend
         run: pipenv run lint
 
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 
       - name: Install Pipenv and Dependencies
-        working-directory: ./starter/backend
         run: |
           pip install pipenv
           pipenv install --dev
 
       - name: Run Tests
-        working-directory: ./starter/backend
         run: pipenv run test
 
   build:
@@ -55,8 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build Docker Image
-        working-directory: ./starter/backend
-        run: docker build --tag mp-backend:${{ github.sha }} .
+        run: docker build -t backend:ci-test ./starter/backend
