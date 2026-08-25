@@ -1,11 +1,11 @@
 {
   "version": 4,
   "terraform_version": "1.15.8",
-  "serial": 563,
+  "serial": 540,
   "lineage": "45a090d9-ce06-19f9-ae61-bcc202143668",
   "outputs": {
     "backend_ecr": {
-      "value": "304547374088.dkr.ecr.us-east-1.amazonaws.com/backend",
+      "value": "853430278644.dkr.ecr.us-east-1.amazonaws.com/backend",
       "type": "string"
     },
     "cluster_name": {
@@ -17,7 +17,7 @@
       "type": "string"
     },
     "frontend_ecr": {
-      "value": "304547374088.dkr.ecr.us-east-1.amazonaws.com/frontend",
+      "value": "853430278644.dkr.ecr.us-east-1.amazonaws.com/frontend",
       "type": "string"
     }
   },
@@ -69,6 +69,113 @@
     },
     {
       "mode": "managed",
+      "type": "aws_codebuild_project",
+      "name": "codebuild",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:codebuild:us-east-1:853430278644:project/udacity",
+            "artifacts": [
+              {
+                "artifact_identifier": "",
+                "bucket_owner_access": "",
+                "encryption_disabled": false,
+                "location": "",
+                "name": "",
+                "namespace_type": "",
+                "override_artifact_name": false,
+                "packaging": "",
+                "path": "",
+                "type": "NO_ARTIFACTS"
+              }
+            ],
+            "badge_enabled": false,
+            "badge_url": "",
+            "build_batch_config": [],
+            "build_timeout": 60,
+            "cache": [
+              {
+                "location": "",
+                "modes": [],
+                "type": "NO_CACHE"
+              }
+            ],
+            "concurrent_build_limit": 0,
+            "description": "Udacity CodeBuild project",
+            "encryption_key": "arn:aws:kms:us-east-1:853430278644:alias/aws/s3",
+            "environment": [
+              {
+                "certificate": "",
+                "compute_type": "BUILD_GENERAL1_SMALL",
+                "environment_variable": [],
+                "image": "aws/codebuild/standard:5.0",
+                "image_pull_credentials_type": "CODEBUILD",
+                "privileged_mode": true,
+                "registry_credential": [],
+                "type": "LINUX_CONTAINER"
+              }
+            ],
+            "file_system_locations": [],
+            "id": "arn:aws:codebuild:us-east-1:853430278644:project/udacity",
+            "logs_config": [
+              {
+                "cloudwatch_logs": [
+                  {
+                    "group_name": "",
+                    "status": "ENABLED",
+                    "stream_name": ""
+                  }
+                ],
+                "s3_logs": [
+                  {
+                    "bucket_owner_access": "",
+                    "encryption_disabled": false,
+                    "location": "",
+                    "status": "DISABLED"
+                  }
+                ]
+              }
+            ],
+            "name": "udacity",
+            "project_visibility": "PRIVATE",
+            "public_project_alias": "",
+            "queued_timeout": 480,
+            "resource_access_role": "",
+            "secondary_artifacts": [],
+            "secondary_source_version": [],
+            "secondary_sources": [],
+            "service_role": "arn:aws:iam::853430278644:role/codebuild-role",
+            "source": [
+              {
+                "auth": [],
+                "build_status_config": [],
+                "buildspec": "buildspec.yml",
+                "git_clone_depth": 1,
+                "git_submodules_config": [],
+                "insecure_ssl": false,
+                "location": "https://github.com/your-org/your-repo",
+                "report_build_status": false,
+                "type": "GITHUB"
+              }
+            ],
+            "source_version": "",
+            "tags": {},
+            "tags_all": {},
+            "vpc_config": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.codebuild"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
       "type": "aws_ecr_repository",
       "name": "backend",
       "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
@@ -76,7 +183,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:ecr:us-east-1:304547374088:repository/backend",
+            "arn": "arn:aws:ecr:us-east-1:853430278644:repository/backend",
             "encryption_configuration": [
               {
                 "encryption_type": "AES256",
@@ -92,8 +199,8 @@
             ],
             "image_tag_mutability": "MUTABLE",
             "name": "backend",
-            "registry_id": "304547374088",
-            "repository_url": "304547374088.dkr.ecr.us-east-1.amazonaws.com/backend",
+            "registry_id": "853430278644",
+            "repository_url": "853430278644.dkr.ecr.us-east-1.amazonaws.com/backend",
             "tags": {},
             "tags_all": {},
             "timeouts": null
@@ -113,7 +220,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:ecr:us-east-1:304547374088:repository/frontend",
+            "arn": "arn:aws:ecr:us-east-1:853430278644:repository/frontend",
             "encryption_configuration": [
               {
                 "encryption_type": "AES256",
@@ -129,8 +236,8 @@
             ],
             "image_tag_mutability": "MUTABLE",
             "name": "frontend",
-            "registry_id": "304547374088",
-            "repository_url": "304547374088.dkr.ecr.us-east-1.amazonaws.com/frontend",
+            "registry_id": "853430278644",
+            "repository_url": "853430278644.dkr.ecr.us-east-1.amazonaws.com/frontend",
             "tags": {},
             "tags_all": {},
             "timeouts": null
@@ -150,23 +257,23 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:eks:us-east-1:304547374088:cluster/cluster",
+            "arn": "arn:aws:eks:us-east-1:853430278644:cluster/cluster",
             "certificate_authority": [
               {
-                "data": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUREVENDQWZXZ0F3SUJBZ0lRYzhLcjRyUnlhTHpnc3pneGs2MlBsakFOQmdrcWhraUc5dzBCQVFzRkFEQVYKTVJNd0VRWURWUVFERXdwcmRXSmxjbTVsZEdWek1CNFhEVEkyTURneU5URTJNVEV3TTFvWERUTXhNRGd5TkRFMgpNVEV3TTFvd0ZURVRNQkVHQTFVRUF4TUthM1ZpWlhKdVpYUmxjekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFECmdnRVBBRENDQVFvQ2dnRUJBT25CMkt2MkVtTEIweTNBNHgweGE1QmdzMklPQ2JaQkRQTXMwamlScTM3VkFXeHgKY3Y5cEFoa284RlNpUGxxZHo1L0dRbkFVT0wwYlA0S0p1ak9HemtVK2RsT0U2cUxxVEFFbWtxMjJFSlgxVlZ0bgo3SzJoZnJGL1ZmN0x6R01rQW1aclJUdVgwbEJpZUdLRUl1UC9jVy9mWjNHcmVzUy9PclhjSkx3NjhhWTdHaFFjClB2MWx0dGhzOGZyQUJUNGxRTGNZMmJ4dTB4ZitxOERZMXpiVlhQeXJCOWt4dnF0R0xOSXNsRHFPUUpCblMwS2cKOFNhMWFXcS9tVG4ybkZmNU9pTDZYcWpUQ3pyZFdIWEhDZlUzekRuTHVmSkFDZG00bGFyVm9ZKzdjaS82V3RicgpwZjNxTzg0eDZETG4zSVExTGV0VXIzMG9Fc3J2Nkt0aFdCR3hUOTBDQXdFQUFhTlpNRmN3RGdZRFZSMFBBUUgvCkJBUURBZ0trTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRklKM0VtQnNtbCthd3BETUdRUHgKaHRMZVBWQ3pNQlVHQTFVZEVRUU9NQXlDQ210MVltVnlibVYwWlhNd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQgpBQmJ2dHRsU21zVzFsSTB6bWNPUFRTUUk4Z2w0ejh3S08yNldUUGIxY1M3YjQzSjlJQnkrRnlXTWVSVm9HcUpHCkRqYmhadEE5V0F1MG0vZkoveDRlN1lHMlhkSm5OSnFtT0s5alRRVkplTFY0UlJzQ05laDJheElZdVh3MnVJd3YKSHJjelhyMjUvWVEzOHFTeUR3Q29ScVR1cmJUZFMyWE9pc3BpejhOVUc4UTVIY1ZMRDQzUkw4YVFmTlpobHAwZgpQbTZHYjZ6T0JOcFJ2VWR3MHJIaXFXSmtzd1BwZktia0RwblJMRFIwRWxVYUpnd1c5NHR1ZXA2enpvZytGSnd2ClJMVUwyemhRV2ZzUThRSzlleHR4VzV2UWc0QnVocUZIWHk5Mm9WcUdoaHA3N215dGlvbkFmajhmeVBZa29lZEkKQ0ZiWFVKeGxiNmVkd0ZyeHVvdFJBY0k9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+                "data": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUREVENDQWZXZ0F3SUJBZ0lRWjNWMFFmQUVlSjA5dzhWNDdLdkorekFOQmdrcWhraUc5dzBCQVFzRkFEQVYKTVJNd0VRWURWUVFERXdwcmRXSmxjbTVsZEdWek1CNFhEVEkyTURneU1UQTBNemN5TmxvWERUTXhNRGd5TURBMApNemN5Tmxvd0ZURVRNQkVHQTFVRUF4TUthM1ZpWlhKdVpYUmxjekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFECmdnRVBBRENDQVFvQ2dnRUJBS29MbDBySHdaTDlHbE1ESW5RY211bHI2czhrOUsvRnVlT0dxNjQrSmhQZjFHbmwKVThCZGdnQ09CaDdmYjd3QTgyaGZHWjVmbGZCSmFnVW1lTURNSHJKampKdkU3RnJhUUhvNmdidkJyVU5heExuSgo1TzI1RWFwYTNmMnlTT1JQdjFOd1pnTzF4VW9zcm14WE5UMnlPSmFtMFM5ZHFvTFRnYVhnaVRCRlRYYnZ1R1poCjl1MTc0VE5hSTRmM1BtQ1M5cStzT1QzVjJ3bDlvWERnWUVFYkN1dnduZGJwUDRFaW9MUFZXbFlzWDZhVHhYOTEKR3pSRkJsM3hld2J3Mmc1bWJ0VlZIbzBpOUUrQ1VISEt3ZndEQjVOcytaYkZ2aS80K1dBRkYrak8zakpqNktOVgpnWVV2ZHNKbUNrWkRDZysxa0Q4NVR1dGRkVGxEK0lLWFgxb29BdWNDQXdFQUFhTlpNRmN3RGdZRFZSMFBBUUgvCkJBUURBZ0trTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkhERjY5YkhrZVIzc2prMmsveHUKNmFtdkFjNXBNQlVHQTFVZEVRUU9NQXlDQ210MVltVnlibVYwWlhNd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQgpBQVhpVWk2MjBuMGVYbm0wdWI3TWFZbXA5aWVHbjFSWnpWV1JUWkJkaTcrWWR2M21wOXl4UmlVOUtlN2ZkV29iCjJLb3VRUnVISlc3ZEEwaWluaUVtZEhDQ2xJZ09MbTdUeElxUU5lcEsxU0NJTklmakFCZ054aGVTcCtUMzNFUzUKRGdySksrVjN3b0hZZ1kwK0pZcEhYNFRkYnBkUi9RSGx4c1VmQUwxNVF3ZzRUMERoNE82aGd3RmxzZ2YxbFRBNQo2TmwxQzR1WHkyckZVdys0MFJSb0tGN3I0Vi9sbGRwb2VQaWp0bS9yQ042TWVzd21yM3pWVHVsN29ka21LM0NqCm02em9ESkk5QlpxTE9iRVAzT041d1M2NFpmZTBDNk85blVXTEk2bmh1MThucHUvSldVbkJHVDB1N1N5MTRGaGMKajdpM3k3MzdwMTFUV2IvTmdqaklrR0E9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
               }
             ],
             "cluster_id": null,
-            "created_at": "2026-08-25 16:10:38.583 +0000 UTC",
-            "enabled_cluster_log_types": null,
+            "created_at": "2026-08-21 04:37:16.482 +0000 UTC",
+            "enabled_cluster_log_types": [],
             "encryption_config": [],
-            "endpoint": "https://6DA2ED1045A941B487B17944E863B5DE.gr7.us-east-1.eks.amazonaws.com",
+            "endpoint": "https://7C8F47AC2B3F90E8274B2750611861B5.gr7.us-east-1.eks.amazonaws.com",
             "id": "cluster",
             "identity": [
               {
                 "oidc": [
                   {
-                    "issuer": "https://oidc.eks.us-east-1.amazonaws.com/id/6DA2ED1045A941B487B17944E863B5DE"
+                    "issuer": "https://oidc.eks.us-east-1.amazonaws.com/id/7C8F47AC2B3F90E8274B2750611861B5"
                   }
                 ]
               }
@@ -181,26 +288,26 @@
             "name": "cluster",
             "outpost_config": [],
             "platform_version": "eks.76",
-            "role_arn": "arn:aws:iam::304547374088:role/eks_cluster_role",
+            "role_arn": "arn:aws:iam::853430278644:role/eks_cluster_role",
             "status": "ACTIVE",
-            "tags": null,
+            "tags": {},
             "tags_all": {},
             "timeouts": null,
             "version": "1.30",
             "vpc_config": [
               {
-                "cluster_security_group_id": "sg-080c3f49ef9a19868",
+                "cluster_security_group_id": "sg-0a62f943da8b54457",
                 "endpoint_private_access": true,
                 "endpoint_public_access": true,
                 "public_access_cidrs": [
                   "0.0.0.0/0"
                 ],
-                "security_group_ids": null,
+                "security_group_ids": [],
                 "subnet_ids": [
-                  "subnet-070caab9193401994",
-                  "subnet-0883fc396cdc85ec7"
+                  "subnet-047b50b51e612b268",
+                  "subnet-09e8c8c904fa72106"
                 ],
-                "vpc_id": "vpc-0df71d423f87310b5"
+                "vpc_id": "vpc-0b0ed40a2d708a82c"
               }
             ]
           },
@@ -228,7 +335,7 @@
           "schema_version": 0,
           "attributes": {
             "ami_type": "BOTTLEROCKET_x86_64",
-            "arn": "arn:aws:eks:us-east-1:304547374088:nodegroup/cluster/udacity/04d01cdc-2a68-d351-544c-1ed490f94b1e",
+            "arn": "arn:aws:eks:us-east-1:853430278644:nodegroup/cluster/udacity/f4d01165-4c5f-55dd-9070-f00b9cd0e49a",
             "capacity_type": "ON_DEMAND",
             "cluster_name": "cluster",
             "disk_size": 20,
@@ -241,14 +348,14 @@
             "launch_template": [],
             "node_group_name": "udacity",
             "node_group_name_prefix": "",
-            "node_role_arn": "arn:aws:iam::304547374088:role/udacity-node-group",
+            "node_role_arn": "arn:aws:iam::853430278644:role/udacity-node-group",
             "release_version": "1.63.0-d4932ff8",
             "remote_access": [],
             "resources": [
               {
                 "autoscaling_groups": [
                   {
-                    "name": "eks-udacity-04d01cdc-2a68-d351-544c-1ed490f94b1e"
+                    "name": "eks-udacity-f4d01165-4c5f-55dd-9070-f00b9cd0e49a"
                   }
                 ],
                 "remote_access_security_group_id": ""
@@ -263,7 +370,7 @@
             ],
             "status": "ACTIVE",
             "subnet_ids": [
-              "subnet-0883fc396cdc85ec7"
+              "subnet-047b50b51e612b268"
             ],
             "tags": null,
             "tags_all": {},
@@ -306,22 +413,24 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:iam::304547374088:role/codebuild-role",
+            "arn": "arn:aws:iam::853430278644:role/codebuild-role",
             "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"codebuild.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
-            "create_date": "2026-08-25T16:10:07Z",
+            "create_date": "2026-08-20T16:52:20Z",
             "description": "",
             "force_detach_policies": false,
             "id": "codebuild-role",
             "inline_policy": [],
-            "managed_policy_arns": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess"
+            ],
             "max_session_duration": 3600,
             "name": "codebuild-role",
             "name_prefix": "",
             "path": "/",
             "permissions_boundary": null,
-            "tags": null,
+            "tags": {},
             "tags_all": {},
-            "unique_id": "AROAUN2DQEQEG22BQSDJS"
+            "unique_id": "AROA4NNDITH2PQQEZPPZJ"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -338,22 +447,25 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:iam::304547374088:role/eks_cluster_role",
+            "arn": "arn:aws:iam::853430278644:role/eks_cluster_role",
             "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"eks.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
-            "create_date": "2026-08-25T16:10:07Z",
+            "create_date": "2026-08-20T16:52:20Z",
             "description": "",
             "force_detach_policies": false,
             "id": "eks_cluster_role",
             "inline_policy": [],
-            "managed_policy_arns": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+              "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+            ],
             "max_session_duration": 3600,
             "name": "eks_cluster_role",
             "name_prefix": "",
             "path": "/",
             "permissions_boundary": null,
-            "tags": null,
+            "tags": {},
             "tags_all": {},
-            "unique_id": "AROAUN2DQEQEDAFMM33JN"
+            "unique_id": "AROA4NNDITH2D363RSIBC"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -370,22 +482,26 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:iam::304547374088:role/udacity-node-group",
+            "arn": "arn:aws:iam::853430278644:role/udacity-node-group",
             "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
-            "create_date": "2026-08-25T16:10:07Z",
+            "create_date": "2026-08-20T16:52:20Z",
             "description": "",
             "force_detach_policies": false,
             "id": "udacity-node-group",
             "inline_policy": [],
-            "managed_policy_arns": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+              "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+              "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+            ],
             "max_session_duration": 3600,
             "name": "udacity-node-group",
             "name_prefix": "",
             "path": "/",
             "permissions_boundary": null,
-            "tags": null,
+            "tags": {},
             "tags_all": {},
-            "unique_id": "AROAUN2DQEQECITKX4UY4"
+            "unique_id": "AROA4NNDITH2LWU4OBDHD"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -405,7 +521,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "udacity-node-group-20260825161007420600000002",
+            "id": "udacity-node-group-20260820165222705900000006",
             "policy_arn": "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
             "role": "udacity-node-group"
           },
@@ -428,7 +544,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "codebuild-role-20260825161007770700000006",
+            "id": "codebuild-role-20260820165222746000000007",
             "policy_arn": "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
             "role": "codebuild-role"
           },
@@ -450,7 +566,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "udacity-node-group-20260825161007763500000005",
+            "id": "udacity-node-group-20260820165222641900000004",
             "policy_arn": "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
             "role": "udacity-node-group"
           },
@@ -473,7 +589,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "eks_cluster_role-20260825161007429900000003",
+            "id": "eks_cluster_role-20260820165222574700000003",
             "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
             "role": "eks_cluster_role"
           },
@@ -495,7 +611,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "eks_cluster_role-20260825161007709000000004",
+            "id": "eks_cluster_role-20260820165222558600000002",
             "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSServicePolicy",
             "role": "eks_cluster_role"
           },
@@ -517,7 +633,7 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "udacity-node-group-20260825161007396800000001",
+            "id": "udacity-node-group-20260820165222705900000005",
             "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
             "role": "udacity-node-group"
           },
@@ -540,13 +656,13 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:ec2:us-east-1:304547374088:internet-gateway/igw-09e77171601930bbf",
-            "id": "igw-09e77171601930bbf",
-            "owner_id": "304547374088",
-            "tags": null,
+            "arn": "arn:aws:ec2:us-east-1:853430278644:internet-gateway/igw-0649359d144e53dae",
+            "id": "igw-0649359d144e53dae",
+            "owner_id": "853430278644",
+            "tags": {},
             "tags_all": {},
             "timeouts": null,
-            "vpc_id": "vpc-0df71d423f87310b5"
+            "vpc_id": "vpc-0b0ed40a2d708a82c"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -566,9 +682,9 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:ec2:us-east-1:304547374088:route-table/rtb-012ca65388835fd5d",
-            "id": "rtb-012ca65388835fd5d",
-            "owner_id": "304547374088",
+            "arn": "arn:aws:ec2:us-east-1:853430278644:route-table/rtb-0ec56d5fdb07a900e",
+            "id": "rtb-0ec56d5fdb07a900e",
+            "owner_id": "853430278644",
             "propagating_vgws": [],
             "route": [],
             "tags": {
@@ -578,7 +694,7 @@
               "Name": "private"
             },
             "timeouts": null,
-            "vpc_id": "vpc-0df71d423f87310b5"
+            "vpc_id": "vpc-0b0ed40a2d708a82c"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -598,9 +714,9 @@
         {
           "schema_version": 0,
           "attributes": {
-            "arn": "arn:aws:ec2:us-east-1:304547374088:route-table/rtb-09676e718a6d54d75",
-            "id": "rtb-09676e718a6d54d75",
-            "owner_id": "304547374088",
+            "arn": "arn:aws:ec2:us-east-1:853430278644:route-table/rtb-0e59f2e67573fff23",
+            "id": "rtb-0e59f2e67573fff23",
+            "owner_id": "853430278644",
             "propagating_vgws": [],
             "route": [
               {
@@ -609,7 +725,7 @@
                 "core_network_arn": "",
                 "destination_prefix_list_id": "",
                 "egress_only_gateway_id": "",
-                "gateway_id": "igw-09e77171601930bbf",
+                "gateway_id": "igw-0649359d144e53dae",
                 "instance_id": "",
                 "ipv6_cidr_block": "",
                 "local_gateway_id": "",
@@ -627,7 +743,7 @@
               "Name": "public"
             },
             "timeouts": null,
-            "vpc_id": "vpc-0df71d423f87310b5"
+            "vpc_id": "vpc-0b0ed40a2d708a82c"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -649,9 +765,9 @@
           "schema_version": 0,
           "attributes": {
             "gateway_id": "",
-            "id": "rtbassoc-0a956298a1a272bb3",
-            "route_table_id": "rtb-012ca65388835fd5d",
-            "subnet_id": "subnet-070caab9193401994"
+            "id": "rtbassoc-068e63d8b2db48ba8",
+            "route_table_id": "rtb-0ec56d5fdb07a900e",
+            "subnet_id": "subnet-09e8c8c904fa72106"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -674,9 +790,9 @@
           "schema_version": 0,
           "attributes": {
             "gateway_id": "",
-            "id": "rtbassoc-0c18275cc95ef0280",
-            "route_table_id": "rtb-09676e718a6d54d75",
-            "subnet_id": "subnet-0883fc396cdc85ec7"
+            "id": "rtbassoc-0b3877c9aba011aac",
+            "route_table_id": "rtb-0e59f2e67573fff23",
+            "subnet_id": "subnet-047b50b51e612b268"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -699,23 +815,23 @@
         {
           "schema_version": 1,
           "attributes": {
-            "arn": "arn:aws:ec2:us-east-1:304547374088:subnet/subnet-070caab9193401994",
+            "arn": "arn:aws:ec2:us-east-1:853430278644:subnet/subnet-09e8c8c904fa72106",
             "assign_ipv6_address_on_creation": false,
             "availability_zone": "us-east-1b",
-            "availability_zone_id": "use1-az2",
+            "availability_zone_id": "use1-az1",
             "cidr_block": "10.0.2.0/24",
             "customer_owned_ipv4_pool": "",
             "enable_dns64": false,
             "enable_resource_name_dns_a_record_on_launch": false,
             "enable_resource_name_dns_aaaa_record_on_launch": false,
-            "id": "subnet-070caab9193401994",
+            "id": "subnet-09e8c8c904fa72106",
             "ipv6_cidr_block": "",
             "ipv6_cidr_block_association_id": "",
             "ipv6_native": false,
             "map_customer_owned_ip_on_launch": false,
             "map_public_ip_on_launch": false,
             "outpost_arn": "",
-            "owner_id": "304547374088",
+            "owner_id": "853430278644",
             "private_dns_hostname_type_on_launch": "ip-name",
             "tags": {
               "Name": "udacity-private"
@@ -724,7 +840,7 @@
               "Name": "udacity-private"
             },
             "timeouts": null,
-            "vpc_id": "vpc-0df71d423f87310b5"
+            "vpc_id": "vpc-0b0ed40a2d708a82c"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -744,23 +860,23 @@
         {
           "schema_version": 1,
           "attributes": {
-            "arn": "arn:aws:ec2:us-east-1:304547374088:subnet/subnet-0883fc396cdc85ec7",
+            "arn": "arn:aws:ec2:us-east-1:853430278644:subnet/subnet-047b50b51e612b268",
             "assign_ipv6_address_on_creation": false,
             "availability_zone": "us-east-1a",
-            "availability_zone_id": "use1-az1",
+            "availability_zone_id": "use1-az6",
             "cidr_block": "10.0.1.0/24",
             "customer_owned_ipv4_pool": "",
             "enable_dns64": false,
             "enable_resource_name_dns_a_record_on_launch": false,
             "enable_resource_name_dns_aaaa_record_on_launch": false,
-            "id": "subnet-0883fc396cdc85ec7",
+            "id": "subnet-047b50b51e612b268",
             "ipv6_cidr_block": "",
             "ipv6_cidr_block_association_id": "",
             "ipv6_native": false,
             "map_customer_owned_ip_on_launch": false,
             "map_public_ip_on_launch": true,
             "outpost_arn": "",
-            "owner_id": "304547374088",
+            "owner_id": "853430278644",
             "private_dns_hostname_type_on_launch": "ip-name",
             "tags": {
               "Name": "udacity-public"
@@ -769,7 +885,7 @@
               "Name": "udacity-public"
             },
             "timeouts": null,
-            "vpc_id": "vpc-0df71d423f87310b5"
+            "vpc_id": "vpc-0b0ed40a2d708a82c"
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0,
@@ -789,19 +905,19 @@
         {
           "schema_version": 1,
           "attributes": {
-            "arn": "arn:aws:ec2:us-east-1:304547374088:vpc/vpc-0df71d423f87310b5",
+            "arn": "arn:aws:ec2:us-east-1:853430278644:vpc/vpc-0b0ed40a2d708a82c",
             "assign_generated_ipv6_cidr_block": false,
             "cidr_block": "10.0.0.0/16",
-            "default_network_acl_id": "acl-00cc9381fc4307f9b",
-            "default_route_table_id": "rtb-0481ed57778a9f078",
-            "default_security_group_id": "sg-0ef578db40ce580bc",
-            "dhcp_options_id": "dopt-03f8713a2882d065e",
+            "default_network_acl_id": "acl-077aced67390299ae",
+            "default_route_table_id": "rtb-0a515051cb830711d",
+            "default_security_group_id": "sg-0825171b3caba41e0",
+            "dhcp_options_id": "dopt-0841cbc4c1e8642c5",
             "enable_classiclink": false,
             "enable_classiclink_dns_support": false,
             "enable_dns_hostnames": true,
             "enable_dns_support": true,
             "enable_network_address_usage_metrics": false,
-            "id": "vpc-0df71d423f87310b5",
+            "id": "vpc-0b0ed40a2d708a82c",
             "instance_tenancy": "default",
             "ipv4_ipam_pool_id": null,
             "ipv4_netmask_length": null,
@@ -810,8 +926,8 @@
             "ipv6_cidr_block_network_border_group": "",
             "ipv6_ipam_pool_id": "",
             "ipv6_netmask_length": 0,
-            "main_route_table_id": "rtb-0481ed57778a9f078",
-            "owner_id": "304547374088",
+            "main_route_table_id": "rtb-0a515051cb830711d",
+            "owner_id": "853430278644",
             "tags": {
               "Name": "udacity"
             },

@@ -244,6 +244,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 ######################
 # CodeBuild Resources
 ######################
+/* 
 resource "aws_codebuild_project" "codebuild" {
   name          = "udacity"
   description   = "Udacity CodeBuild project"
@@ -251,7 +252,7 @@ resource "aws_codebuild_project" "codebuild" {
   build_timeout = 60
   artifacts {
     type = "NO_ARTIFACTS"
-  }
+  } 
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
@@ -272,7 +273,7 @@ resource "aws_codebuild_project" "codebuild" {
     type = "NO_CACHE"
   }
 }
-
+*/
 resource "aws_iam_role" "codebuild" {
   name = "codebuild-role"
 
