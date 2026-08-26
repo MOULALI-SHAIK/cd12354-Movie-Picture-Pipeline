@@ -2,7 +2,8 @@ name: Backend Continuous Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
     paths:
       - 'starter/backend/**'
       - '.github/workflows/backend-cd.yaml'
@@ -13,40 +14,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install Pipenv and Dependencies
-        working-directory: ./starter/backend
+      - name: Install dependencies
         run: |
-          pip install pipenv
-          pipenv install --dev
+          python -m pip install --upgrade pip
+          pip install flake8 pytest pytest-flask
+          if [ -f starter/backend/requirements.txt ]; then pip install -r starter/backend/requirements.txt; fi
 
-      - name: Run Lint
-        working-directory: ./starter/backend
-        run: pipenv run lint
+      - name: Lint with flake8
+        run: |
+          flake8 starter/backend --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 starter/backend --count --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Run Tests
-        working-directory: ./starter/backend
-        run: pipenv run test
+        run: |
+          cd starter/backend
+          pytest
 
   deploy:
     needs: [lint-and-test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Verify AWS identity
         run: aws sts get-caller-identity
@@ -60,11 +64,8 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: backend
           IMAGE_TAG: ${{ github.sha }}
-        working-directory: ./starter/backend
         run: |
-          docker build \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./starter/backend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
@@ -76,8 +77,10 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: backend
           IMAGE_TAG: ${{ github.sha }}
+          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION || 'us-east-1' }}
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
           cd starter/backend/k8s
           kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          kustomize build | kubectl apply -f -
+          kustomize build . | kubectl apply -f -
