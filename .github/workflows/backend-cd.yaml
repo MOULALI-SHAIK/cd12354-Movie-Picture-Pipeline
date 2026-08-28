@@ -24,8 +24,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest pytest-flask
-          if [ -f starter/backend/requirements.txt ]; then pip install -r starter/backend/requirements.txt; fi
+          pip install flake8 pytest pytest-flask flask-cors
+          if [ -f starter/backend/requirements.txt ]; then
+            pip install -r starter/backend/requirements.txt
+          fi
+          if [ -f starter/backend/Pipfile ]; then
+            pip install pipenv
+            cd starter/backend && pipenv install --dev --system
+          fi
 
       - name: Lint with flake8
         run: |
@@ -35,7 +41,7 @@ jobs:
       - name: Run Tests
         run: |
           cd starter/backend
-          pytest
+          PYTHONPATH=. pytest
 
   deploy:
     needs: [lint-and-test]
