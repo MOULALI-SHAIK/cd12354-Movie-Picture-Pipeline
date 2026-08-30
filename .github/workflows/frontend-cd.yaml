@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -28,14 +28,36 @@ jobs:
           cd starter/frontend
           npm ci
 
-      - name: Lint and Test
+      - name: Lint
         run: |
           cd starter/frontend
           npm run lint --if-present
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'starter/frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          cd starter/frontend
+          npm ci
+
+      - name: Test
+        run: |
+          cd starter/frontend
           CI=true npm test
 
-  deploy:
-    needs: [lint-and-test]
+  build:
+    needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -70,6 +92,25 @@ jobs:
             ./starter/frontend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v2

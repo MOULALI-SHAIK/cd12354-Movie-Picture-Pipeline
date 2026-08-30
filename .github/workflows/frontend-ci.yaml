@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -28,12 +28,27 @@ jobs:
         working-directory: ./starter/frontend
         run: npm run lint
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: ./starter/frontend
+        run: npm install
+
       - name: Run tests
         working-directory: ./starter/frontend
         run: CI=true npm test -- --watchAll=false
 
   build:
-    needs: [lint-and-test]
+    needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
