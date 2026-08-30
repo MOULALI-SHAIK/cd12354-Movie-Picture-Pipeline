@@ -15,7 +15,8 @@ function MovieList({ onMovieClick }) {
     <ul>
       {movies.map((movie) => (
         <li className="movieItem" key={movie.id} onClick={() => onMovieClick(movie)}>
-          {movie.title}
+          <h2>{movie.title}</h2>
+          <p>{movie.description}</p>
         </li>
       ))}
     </ul>

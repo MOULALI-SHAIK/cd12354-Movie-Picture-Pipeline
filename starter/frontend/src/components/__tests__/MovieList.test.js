@@ -6,8 +6,8 @@ import MovieList from '../MovieList';
 jest.mock('axios');
 
 const mockMovies = [
-  { id: 1, title: 'Movie 1' },
-  { id: 2, title: 'Movie 2' },
+  { id: 1, title: 'Movie 1', description: 'An exciting adventure.' },
+  { id: 2, title: 'Movie 2', description: 'A story about friendship.' },
 ];
 
 test('renders movie titles', async () => {
@@ -21,6 +21,15 @@ test('renders movie titles', async () => {
 
   expect(movie1).toBeInTheDocument();
   expect(movie2).toBeInTheDocument();
+});
+
+test('renders movie descriptions', async () => {
+  axios.get.mockResolvedValueOnce({ data: { movies: mockMovies } });
+
+  render(<MovieList onMovieClick={jest.fn()} />);
+
+  expect(await screen.findByText('An exciting adventure.')).toBeInTheDocument();
+  expect(screen.getByText('A story about friendship.')).toBeInTheDocument();
 });
 
 test('calls onMovieClick when movie is clicked', async () => {
