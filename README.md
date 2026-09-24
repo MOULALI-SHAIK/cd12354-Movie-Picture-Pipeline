@@ -162,7 +162,19 @@ cd setup
 
 We've provided the below list of dependencies to assist in the case you'd like to run any of the work locally. Local development issues, however, are not supported as we cannot control the environment as we can in the online workspace.
 
-All of the tools below will be available in the workspace
+For a Debian-based workspace, install and verify all of the tools with:
+
+```bash
+bash ./setup/install-tools.sh
+```
+
+Then configure the application dependencies from the repository root:
+
+```bash
+./setup/workspace-setup.sh
+```
+
+All of the tools below will be available in the workspace.
 
 * [docker](https://docs.docker.com/desktop/install/debian/) - Used to build the frontend and backend applications
 * [kubectl](https://kubernetes.io/docs/tasks/tools/) - Used to apply the kubernetes manifests
