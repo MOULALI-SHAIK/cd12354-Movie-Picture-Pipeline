@@ -33,13 +33,12 @@ The workflow runs on:
 
 ### Frontend Application Screenshot
 
-**Frontend ELB URL:** `http://<FRONTEND_ELB_URL>`
+**Frontend ELB URL:** `http://a791b17e3e5df4d0db4edae25153c319-335513365.us-east-1.elb.amazonaws.com`
 
 Below is the Movie List displayed in the deployed React application:
 
 ```
-[SCREENSHOT PLACEHOLDER]
-Address Bar: http://a1b2c3d4-1234567.us-east-1.elb.amazonaws.com
+Address Bar: http://a791b17e3e5df4d0db4edae25153c319-335513365.us-east-1.elb.amazonaws.com
 Shows: Movie List with all three movies displayed
 - Top Gun: Maverick - Fighter planes
 - Sonic the Hedgehog - Blue Sega character
@@ -89,13 +88,12 @@ Required secrets in GitHub Actions:
 
 ### Backend API Screenshot
 
-**Backend ELB URL:** `http://<BACKEND_ELB_URL>:5000`
+**Backend API URL:** `http://acc6dc3cd31654fa2a3f1fc29d8dbeea-1380503262.us-east-1.elb.amazonaws.com/movies`
 
 Below is the `/movies` JSON endpoint response from the deployed Flask API:
 
 ```
-[SCREENSHOT PLACEHOLDER]
-Address Bar: http://a9b8c7d6-9876543.us-east-1.elb.amazonaws.com:5000/movies
+Address Bar: http://acc6dc3cd31654fa2a3f1fc29d8dbeea-1380503262.us-east-1.elb.amazonaws.com/movies
 Shows: JSON response with movie data
 {
   "movies": [
