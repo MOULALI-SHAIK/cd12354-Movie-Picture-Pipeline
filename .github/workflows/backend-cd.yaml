@@ -127,6 +127,11 @@ jobs:
           test -n "$EKS_CLUSTER_NAME"
           test -n "$AWS_REGION"
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+          kubectl get nodes
+          test "$(kubectl get nodes --no-headers | wc -l)" -gt 0 || {
+            echo "No EKS worker nodes are registered. Create the Terraform node group before deploying."
+            exit 1
+          }
           cd starter/backend/k8s
           kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build . | kubectl apply -f -
@@ -136,6 +141,11 @@ jobs:
           kubectl rollout status deployment/backend --timeout=180s || true
           echo "----- Logging - kubectl get all -----"
           kubectl get all
+          echo "----- Logging - backend pod details -----"
+          kubectl get pods -l app=backend -o wide
+          kubectl describe pods -l app=backend
+          echo "----- Logging - recent Kubernetes events -----"
+          kubectl get events --sort-by=.lastTimestamp | tail -n 30
           echo "----- Logging - kubectl describe deploy -----"
           kubectl describe deploy backend
           echo "----- Backend API URL -----"

@@ -126,6 +126,11 @@ jobs:
           test -n "$EKS_CLUSTER_NAME"
           test -n "$AWS_REGION"
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+          kubectl get nodes
+          test "$(kubectl get nodes --no-headers | wc -l)" -gt 0 || {
+            echo "No EKS worker nodes are registered. Create the Terraform node group before deploying."
+            exit 1
+          }
           cd starter/frontend/k8s
           kustomize edit set image frontend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build . | kubectl apply -f -
