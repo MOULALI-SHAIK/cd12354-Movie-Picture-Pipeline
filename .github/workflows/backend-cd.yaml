@@ -121,10 +121,35 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: backend
           IMAGE_TAG: ${{ github.sha }}
-          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME || 'cluster' }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
         run: |
+          test -n "$EKS_CLUSTER_NAME"
+          test -n "$AWS_REGION"
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
           cd starter/backend/k8s
           kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build . | kubectl apply -f -
+
+      - name: Verify Kubernetes deployment
+        run: |
+          kubectl rollout status deployment/backend --timeout=180s || true
+          echo "----- Logging - kubectl get all -----"
+          kubectl get all
+          echo "----- Logging - kubectl describe deploy -----"
+          kubectl describe deploy backend
+          echo "----- Backend API URL -----"
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' service/backend --timeout=180s
+          BACKEND_URL="http://$(kubectl get service backend -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')/movies"
+          echo "$BACKEND_URL"
+          echo "Backend API: $BACKEND_URL" >> "$GITHUB_STEP_SUMMARY"
+          curl --fail --retry 5 --retry-delay 10 "$BACKEND_URL"
+
+      - name: Verify Backend ECR image
+        run: |
+          echo "----- Logging - Backend ECR Image Details -----"
+          AWS_PAGER="" aws ecr describe-images \
+            --repository-name backend \
+            --region us-east-1 \
+            --query 'sort_by(imageDetails,&imagePushedAt)[-1].{Tags:imageTags,Digest:imageDigest,PushedAt:imagePushedAt}' \
+            --output table

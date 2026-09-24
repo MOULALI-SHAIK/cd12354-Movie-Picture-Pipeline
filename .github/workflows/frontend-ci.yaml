@@ -19,10 +19,16 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 18
+          cache: npm
+          cache-dependency-path: starter/frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: ./starter/frontend
-        run: npm install
+        run: npm ci
+
+      - name: Validate npm cache
+        working-directory: ./starter/frontend
+        run: npm cache verify
 
       - name: Run lint
         working-directory: ./starter/frontend
@@ -38,10 +44,16 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 18
+          cache: npm
+          cache-dependency-path: starter/frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: ./starter/frontend
-        run: npm install
+        run: npm ci
+
+      - name: Validate npm cache
+        working-directory: ./starter/frontend
+        run: npm cache verify
 
       - name: Run tests
         working-directory: ./starter/frontend
@@ -54,5 +66,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
 
-      - name: Build Docker Image
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: starter/frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./starter/frontend
+        run: npm ci
+
+      - name: Validate npm cache
+        working-directory: ./starter/frontend
+        run: npm cache verify
+
+      - name: Build frontend application
+        working-directory: ./starter/frontend
+        run: npm run build
+
+      - name: Build Docker image
         run: docker build -t frontend:ci-test ./starter/frontend
