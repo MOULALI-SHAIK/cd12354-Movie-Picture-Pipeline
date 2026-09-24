@@ -126,9 +126,17 @@ jobs:
           test -n "$EKS_CLUSTER_NAME"
           test -n "$AWS_REGION"
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
-          kubectl get nodes
-          test "$(kubectl get nodes --no-headers | wc -l)" -gt 0 || {
-            echo "No EKS worker nodes are registered. Create the Terraform node group before deploying."
+          for attempt in {1..36}; do
+            ready_nodes="$(kubectl get nodes --no-headers 2>/dev/null | awk '$2 == "Ready" {count++} END {print count+0}')"
+            if [ "$ready_nodes" -gt 0 ]; then
+              kubectl get nodes
+              break
+            fi
+            echo "Waiting for an EKS Ready node ($attempt/36)..."
+            sleep 5
+          done
+          test "${ready_nodes:-0}" -gt 0 || {
+            echo "No EKS worker nodes reached Ready state."
             exit 1
           }
           cd starter/frontend/k8s
